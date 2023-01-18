@@ -1,0 +1,13 @@
+channels:
+  - uri: 'wss://mppclone.com:8443'
+    _id: ✧𝓓𝓔𝓥 𝓡𝓸𝓸𝓶✧
+    set:
+      color: '#222'
+      color2: '#000'
+    disable:
+      - getcrown
+      - disabletest
+
+user:
+  name: λ
+  color: '#ff7300'

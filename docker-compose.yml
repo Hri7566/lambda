@@ -1,0 +1,8 @@
+services:
+  lambda:
+    build: .
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres
+    env_file: .env

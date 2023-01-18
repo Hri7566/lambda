@@ -1,0 +1,28 @@
+{
+  "name": "lambda",
+  "version": "1.0.0",
+  "description": "MPP bot",
+  "main": "build/index.js",
+  "repository": "git@github.com:Hri7566/lambda.git",
+  "author": "Hri7566 <hri7566@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "node .",
+    "build": "npx tsc",
+    "watch": "yon build -w",
+    "dev": "yon build && yon start"
+  },
+  "dependencies": {
+    "@types/pg": "^8.6.6",
+    "dotenv": "^16.0.3",
+    "mppclone-client": "^1.0.0",
+    "pg": "^8.8.0",
+    "yaml": "^2.2.1",
+    "yarn-or-npm": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "typescript": "^4.9.4"
+  }
+}
