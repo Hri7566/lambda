@@ -2,7 +2,7 @@ declare interface MPPParticipant {
     _id: string;
     name: string;
     color: string;
-    id: string;
+    id?: string;
 }
 
 declare interface MPPMessage {
@@ -42,4 +42,17 @@ declare interface MPPCursorMessageIncoming {
     id: string;
     x: number | string;
     y: number | string;
+}
+
+declare interface MPPChannelListChannel {
+    count: number;
+    id: string;
+    _id: string;
+    settings: Record<string, number | string | boolean>;
+}
+
+declare interface MPPChannelListMessageIncoming {
+    m: 'ls';
+    c: boolean;
+    u: MPPChannelListChannel[];
 }

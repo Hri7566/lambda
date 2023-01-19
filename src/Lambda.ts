@@ -1,5 +1,6 @@
 import { LambdaClient } from './LambdaClient';
 import { LambdaClientManager } from './LambdaClientManager';
+import { LambdaCommandHandler } from './LambdaCommandHandler';
 import { LambdaData } from './LambdaData';
 import { LambdaLogger } from './LambdaLogger';
 import { LambdaUtil } from './LambdaUtil';
@@ -15,10 +16,12 @@ export class Lambda {
     public static async start(): Promise<void> {
         await LambdaData.connect();
         LambdaClientManager.start();
+        LambdaCommandHandler.registerCommands();
         this.logger.info('Ready');
     }
 
     public static async stop(): Promise<void> {
-        
+        await LambdaData.disconnect();
+        LambdaClientManager.stop();
     }
 }

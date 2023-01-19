@@ -1,4 +1,6 @@
 import { LambdaClient } from '../LambdaClient';
+import { LambdaCommandHandler } from '../LambdaCommandHandler';
+import { LambdaData } from '../LambdaData';
 import { LambdaLogger } from '../LambdaLogger';
 import { LambdaCursor } from './LambdaCursor';
 const MPPClient = require('mppclone-client');
@@ -45,10 +47,15 @@ export class LambdaClientMPP extends LambdaClient {
     protected override bindEventListeners(): void {
         this.client.on('a', (msg: MPPChatMessageIncoming) => {
             this.logger.info(`${msg.p.name}: ${msg.a}`);
+            LambdaCommandHandler.handleCommand(this, msg, this.disabledCommands);
         });
 
         this.client.on('hi', (msg: MPPHiMessageIncoming) => {
             this.setUser();
+        });
+
+        this.client.on('participant added', async (p: MPPParticipant) => {
+            await LambdaData.insertUser(p);
         });
     }
 
@@ -60,10 +67,19 @@ export class LambdaClientMPP extends LambdaClient {
     }
 
     public setUser(user: MPPParticipant = this.desiredUser): void {
-
         this.client.sendArray([{
             m: 'userset',
             set: user
         }]);
+    }
+
+    public pollChannelList(): void {
+        this.client.sendArray([{
+            m: '+ls'
+        }]);
+
+        this.client.once('ls', (msg: MPPChannelListMessageIncoming) => {
+            
+        });
     }
 }
