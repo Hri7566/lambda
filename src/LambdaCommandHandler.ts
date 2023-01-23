@@ -2,6 +2,7 @@ import { readdirSync } from 'fs';
 import { LambdaClient } from './LambdaClient';
 import { LambdaLogger } from './LambdaLogger';
 import { resolve } from 'path';
+import EventEmitter from 'events';
 
 export class LambdaCommand {
     constructor(
@@ -102,6 +103,7 @@ export class LambdaCommandHandler {
         try {
             (async () => {
                 let out = await foundCmd.callback(msg, cl);
+                this.emit('command output', msg, cl, out);
                 if (out) {
                     cl.sendChat(out);
                 }
@@ -129,4 +131,9 @@ export class LambdaCommandHandler {
     public static addCommand(cmd: LambdaCommand): void {
         this.commands.push(cmd);
     }
+
+    public static on = EventEmitter.prototype.on;
+    public static off = EventEmitter.prototype.off;
+    public static once = EventEmitter.prototype.once;
+    public static emit = EventEmitter.prototype.emit;
 }

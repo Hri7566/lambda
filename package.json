@@ -16,6 +16,7 @@
   "dependencies": {
     "@types/pg": "^8.6.6",
     "dotenv": "^16.0.3",
+    "fancy-text-converter": "^1.0.9",
     "mppclone-client": "^1.0.0",
     "pg": "^8.8.0",
     "yaml": "^2.2.1",

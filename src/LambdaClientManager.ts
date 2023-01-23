@@ -33,6 +33,9 @@ export class LambdaClientManager {
                 let cl = new LambdaClientMPP(chConfig, mppConfig.user);
                 this.clients.push(cl);
             }
+
+            delete process.env.MPPCLONE_TOKEN;
+            this.logger.info('Deleted MPP token environment variable');
         }
 
         for (const cl of this.clients) {

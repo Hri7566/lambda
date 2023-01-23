@@ -3,7 +3,9 @@ import { LambdaCommandHandler } from '../LambdaCommandHandler';
 import { LambdaData } from '../LambdaData';
 import { LambdaLogger } from '../LambdaLogger';
 import { LambdaCursor } from './LambdaCursor';
+
 const MPPClient = require('mppclone-client');
+const ftc = require('fancy-text-converter');
 
 const MPPCLONE_TOKEN = process.env.MPPCLONE_TOKEN;
 
@@ -46,7 +48,7 @@ export class LambdaClientMPP extends LambdaClient {
 
     protected override bindEventListeners(): void {
         this.client.on('a', (msg: MPPChatMessageIncoming) => {
-            this.logger.info(`${msg.p.name}: ${msg.a}`);
+            this.logger.info(ftc.normalise(this.client.channel._id) + `[${msg.p._id.substring(0, 6)}] ${msg.p.name}: ${msg.a}`);
             LambdaCommandHandler.handleCommand(this, msg, this.disabledCommands);
         });
 
@@ -79,7 +81,9 @@ export class LambdaClientMPP extends LambdaClient {
         }]);
 
         this.client.once('ls', (msg: MPPChannelListMessageIncoming) => {
-            
+            this.client.sendArray([{
+                m: '-ls'
+            }]);
         });
     }
 }
