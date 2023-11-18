@@ -10,7 +10,7 @@ export class LambdaData {
         host: POSTGRES_HOST,
         user: POSTGRES_USER,
         password: POSTGRES_PASSWORD,
-        connectionTimeoutMillis: 30000
+        connectionTimeoutMillis: 120000
     });
 
     public static logger = new LambdaLogger('Data');
@@ -51,11 +51,15 @@ export class LambdaData {
     }
 
     public static async userExists(_id: string) {
-        return (await this.db.query(`SELECT * FROM users WHERE _id = $1`, [_id])).rowCount > 0;
+        const data = await this.db.query(`SELECT * FROM users WHERE _id = $1`, [_id]);
+        if (!data.rowCount) return false;
+        return data.rowCount > 0;
     }
 
     public static async nameHistoryExists(_id: string) {
-        return (await this.db.query(`SELECT * FROM nh WHERE _id = $1`, [_id])).rowCount > 0;
+        const data = await this.db.query(`SELECT * FROM nh WHERE _id = $1`, [_id]);
+        if (!data.rowCount) return false;
+        return data.rowCount > 0;
     }
 
     public static async getNameHistory(_id: string) {

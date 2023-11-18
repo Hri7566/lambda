@@ -3,14 +3,13 @@ import { LambdaCommandHandler } from '../LambdaCommandHandler';
 import { LambdaData } from '../LambdaData';
 import { LambdaLogger } from '../LambdaLogger';
 import { LambdaCursor } from './LambdaCursor';
-
-const MPPClient = require('mppclone-client');
+import MPPClient from "mpp-client-net";
 const ftc = require('fancy-text-converter');
 
-const MPPCLONE_TOKEN = process.env.MPPCLONE_TOKEN;
+const MPPCLONE_TOKEN = process.env.MPPCLONE_TOKEN || "";
 
 export class LambdaClientMPP extends LambdaClient {
-    public client: typeof MPPClient;
+    public client: MPPClient;
     public disabledCommands: string[];
     public logger = new LambdaLogger('Lambda Client');
 
@@ -22,7 +21,7 @@ export class LambdaClientMPP extends LambdaClient {
     constructor(config: MPPChannelConfig, user: MPPParticipant) {
         super();
         this.client = new MPPClient(config.uri, MPPCLONE_TOKEN);
-        this.client.setChannel(config);
+        this.client.setChannel(config._id, config.set);
         
         this.disabledCommands = [];
         if (config.disable) {
@@ -48,15 +47,16 @@ export class LambdaClientMPP extends LambdaClient {
 
     protected override bindEventListeners(): void {
         this.client.on('a', (msg: MPPChatMessageIncoming) => {
-            this.logger.info(ftc.normalise(this.client.channel._id) + `[${msg.p._id.substring(0, 6)}] ${msg.p.name}: ${msg.a}`);
+            const _id = this.client.desiredChannelId;
+            this.logger.info(ftc.normalise(_id) + `[${msg.p._id.substring(0, 6)}] ${msg.p.name}: ${msg.a}`);
             LambdaCommandHandler.handleCommand(this, msg, this.disabledCommands);
         });
 
-        this.client.on('hi', (msg: MPPHiMessageIncoming) => {
+        this.client.on('hi', (msg) => {
             this.setUser();
         });
 
-        this.client.on('participant added', async (p: MPPParticipant) => {
+        (this.client as unknown as any).on('participant added', async (p: MPPParticipant) => {
             await LambdaData.insertUser(p);
         });
     }

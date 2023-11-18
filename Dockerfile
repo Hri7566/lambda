@@ -4,12 +4,12 @@ WORKDIR /usr/src/app
 
 # install dependencies
 COPY package.json ./
-COPY yarn.lock ./
-RUN npx yarn
+COPY pnpm-lock.yaml ./
+RUN npx pnpm i
 
 # build project
 COPY . .
-RUN npx yarn build
+RUN npx pnpm build
 
 # run project
-CMD [ "yarn", "start" ]
+CMD [ "node", "." ]
